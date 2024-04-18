@@ -1,0 +1,9 @@
+Juan|Perez|CS|1000.45
+Maria|Gomez|Civil|800.34
+Pedro|Lopez|Ingenieria|567.43
+Ana|Torres|Ingenieria|764.21
+Luis|Garcia|Ingenieria|943.79
+Carlos|Gutierrez|Ingenieria|1234.56
+Brigith|Hinojosa|Medicina|3500.23
+Luis|Garcia|Ingenieria|943.79
+Jeffrey|Monja|CS|5004.32
