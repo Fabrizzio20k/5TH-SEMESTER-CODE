@@ -138,6 +138,7 @@ private:
         records.push_back(record);
         inorder(record.right, file_explorer, records);
     }
+
     Record find(long pos_node, TK key, fstream &file)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
@@ -455,7 +456,6 @@ void readFile(string filename)
 
 int main()
 {
-
     writeFile("data.dat");
     readFile("data.dat");
 }
