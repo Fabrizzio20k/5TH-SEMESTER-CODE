@@ -474,6 +474,6 @@ void readFile(string filename)
 int main()
 {
 
-    writeFile("data.bin");
-    readFile("data.bin");
+    writeFile("data.dat");
+    readFile("data.dat");
 }
