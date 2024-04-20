@@ -199,7 +199,7 @@ private:
             }
         }
 
-        update_height(pos_node, file);
+        updateHeight(pos_node, file);
 
         if (getBalanceFactor(pos_node, file) <= -2 && getBalanceFactor(current.right, file) < 0)
         {
@@ -261,7 +261,7 @@ private:
             {
                 pos_root = newNode;
                 updateRoot(file, pos_root);
-                update_height(pos_root, file);
+                updateHeight(pos_root, file);
             }
             else
             {
@@ -297,7 +297,7 @@ private:
             {
                 pos_root = newNode;
                 updateRoot(file, pos_root);
-                update_height(pos_root, file);
+                updateHeight(pos_root, file);
             }
             else
             {
@@ -343,7 +343,7 @@ private:
         file >> record;
         return height(record.left, file) - height(record.right, file);
     }
-    void update_height(long pos_node, fstream &file)
+    void updateHeight(long pos_node, fstream &file)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         file.seekg(repos, ios::beg);
