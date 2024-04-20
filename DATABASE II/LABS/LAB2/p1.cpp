@@ -108,10 +108,10 @@ public:
     }
     vector<Record> inorder()
     {
-        fstream file_explorer(file_name, ios::in | ios::out | ios::binary);
+        fstream file(file_name, ios::in | ios::out | ios::binary);
         vector<Record> res;
-        inorder(pos_root, file_explorer, res);
-        file_explorer.close();
+        inorder(pos_root, file, res);
+        file.close();
 
         return res;
     }
@@ -125,47 +125,30 @@ private:
         return index_root;
     }
 
-    void file_creator(string filename)
-    {
-
-        fstream comprobation_file(filename, ios::in | ios::binary);
-        if (comprobation_file)
-        {
-
-            comprobation_file.close();
-        }
-        else
-        {
-            cout << "Not found creating new file..." << endl;
-            comprobation_file.close();
-            fstream create(filename, ios::out | ios::binary);
-            create.close();
-        }
-    }
-
-    void inorder(int pos_node, fstream &file_explorer, vector<Record> &records)
+    void inorder(int pos_node, fstream &file, vector<Record> &records)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         if (pos_node == -1)
             return;
 
-        file_explorer.seekg(repos);
+        file.seekg(repos);
         Record record;
-        file_explorer >> record;
-        inorder(record.left, file_explorer, records);
+        file >> record;
+        inorder(record.left, file, records);
         records.push_back(record);
-        inorder(record.right, file_explorer, records);
+        inorder(record.right, file, records);
     }
+
     Record find(long pos_node, TK key, fstream &file)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         file.seekg(repos);
         Record record;
         file >> record;
-        if (key > record.cod)
-            find(record.right, key, file);
-        else if (key < record.right)
+        if (key < record.cod)
             find(record.left, key, file);
+        else if (key > record.right)
+            find(record.right, key, file);
         return record;
     }
 
