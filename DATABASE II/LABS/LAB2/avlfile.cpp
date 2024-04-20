@@ -201,14 +201,14 @@ private:
 		}
 
 		updateHeight(pos_node);
-		balance(pos_node, file);
+		// balance(pos_node, file);
 	}
 
 	int height(long pos_node)
 	{
 		if (pos_node == -1)
 		{
-			return 0;
+			return -1;
 		}
 		Record node;
 		readNode(pos_node, node);
@@ -217,6 +217,7 @@ private:
 
 	void updateHeight(long pos_node)
 	{
+		// update the height of the node in a correct way
 		if (pos_node == -1)
 		{
 			return;
@@ -225,6 +226,7 @@ private:
 		readNode(pos_node, node);
 		node.height = 1 + max(height(node.left), height(node.right));
 		writeNode(pos_node, node);
+		return;
 	}
 	int balancingFactor(long pos_node)
 	{

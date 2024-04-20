@@ -1,6 +1,7 @@
 #ifndef AVLTree_H
 #define AVLTree_H
 #include "node_tree.h"
+#include <iostream>
 
 using namespace std;
 
@@ -17,10 +18,6 @@ public:
         insert(this->root, value);
     }
     bool find(T value)
-    {
-        return find(this->root, value);
-    }
-    NodeBT<T> *find(T value)
     {
         return find(this->root, value);
     }
@@ -111,7 +108,7 @@ void AVLTree<T>::displayPreOrder(NodeBT<T> *node)
 {
     if (node == nullptr)
         return;
-    cout << node->data << endl;
+    cout << node->data << " | Height: " << node->height << endl;
     displayPreOrder(node->left);
     displayPreOrder(node->right);
 }
@@ -179,7 +176,7 @@ void AVLTree<T>::insert(NodeBT<T> *&node, T value)
     else
         insert(node->right, value);
     updateHeight(node);
-    balance(node);
+    // balance(node);
 }
 
 template <typename T>
