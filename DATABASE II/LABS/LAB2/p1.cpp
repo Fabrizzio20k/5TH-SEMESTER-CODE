@@ -117,14 +117,6 @@ public:
     }
 
 private:
-    long read_root(fstream &filename)
-    {
-        filename.seekg(0, ios::beg);
-        long index_root;
-        filename.read((char *)&index_root, sizeof(long));
-        return index_root;
-    }
-
     void inorder(int pos_node, fstream &file_explorer, vector<Record> &records)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
