@@ -117,18 +117,18 @@ public:
     }
 
 private:
-    void inorder(int pos_node, fstream &file_explorer, vector<Record> &records)
+    void inorder(int pos_node, fstream &file, vector<Record> &records)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         if (pos_node == -1)
             return;
 
-        file_explorer.seekg(repos);
+        file.seekg(repos);
         Record record;
-        file_explorer >> record;
-        inorder(record.left, file_explorer, records);
+        file >> record;
+        inorder(record.left, file, records);
         records.push_back(record);
-        inorder(record.right, file_explorer, records);
+        inorder(record.right, file, records);
     }
 
     Record find(long pos_node, TK key, fstream &file)
@@ -142,42 +142,6 @@ private:
         else if (key > record.cod)
             find(record.right, key, file);
         return record;
-    }
-
-    long height(long pos_node, fstream &file)
-    {
-        long repos = sizeof(long) + pos_node * sizeof(Record);
-        if (pos_node == -1)
-            return 0;
-        file.seekg(repos, ios::beg);
-        Record record;
-        file >> record;
-        return record.height;
-    }
-
-    long getBalanceFactor(long pos_node, fstream &file)
-    {
-        long repos = sizeof(long) + pos_node * sizeof(Record);
-        if (pos_node == -1)
-            return 0;
-
-        file.seekg(repos, ios::beg);
-        Record record;
-        file >> record;
-        return height(record.left, file) - height(record.right, file);
-    }
-
-    void update_height(long pos_node, fstream &file)
-    {
-        long repos = sizeof(long) + pos_node * sizeof(Record);
-        file.seekg(repos, ios::beg);
-        Record record;
-        file >> record;
-
-        long new_height = 1 + max(height(record.left, file), height(record.right, file));
-
-        file.seekp(repos + sizeof(Record) - sizeof(long));
-        file.write((char *)&new_height, sizeof(long));
     }
 
     void insert(Record record, long pos_node, long parent_pos, fstream &file, bool isLeft, bool isRight)
@@ -358,6 +322,39 @@ private:
         }
     }
 
+    long height(long pos_node, fstream &file)
+    {
+        long repos = sizeof(long) + pos_node * sizeof(Record);
+        if (pos_node == -1)
+            return 0;
+        file.seekg(repos, ios::beg);
+        Record record;
+        file >> record;
+        return record.height;
+    }
+    long getBalanceFactor(long pos_node, fstream &file)
+    {
+        long repos = sizeof(long) + pos_node * sizeof(Record);
+        if (pos_node == -1)
+            return 0;
+
+        file.seekg(repos, ios::beg);
+        Record record;
+        file >> record;
+        return height(record.left, file) - height(record.right, file);
+    }
+    void update_height(long pos_node, fstream &file)
+    {
+        long repos = sizeof(long) + pos_node * sizeof(Record);
+        file.seekg(repos, ios::beg);
+        Record record;
+        file >> record;
+
+        long new_height = 1 + max(height(record.left, file), height(record.right, file));
+
+        file.seekp(repos + sizeof(Record) - sizeof(long));
+        file.write((char *)&new_height, sizeof(long));
+    }
     long rightRotation(long pos_node, fstream &file)
     {
 
