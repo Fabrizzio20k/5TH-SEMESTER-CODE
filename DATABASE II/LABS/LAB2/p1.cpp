@@ -108,10 +108,10 @@ public:
     }
     vector<Record> inorder()
     {
-        fstream file(file_name, ios::in | ios::out | ios::binary);
+        fstream file_explorer(file_name, ios::in | ios::out | ios::binary);
         vector<Record> res;
-        inorder(pos_root, file, res);
-        file.close();
+        inorder(pos_root, file_explorer, res);
+        file_explorer.close();
 
         return res;
     }
@@ -125,29 +125,28 @@ private:
         return index_root;
     }
 
-    void inorder(int pos_node, fstream &file, vector<Record> &records)
+    void inorder(int pos_node, fstream &file_explorer, vector<Record> &records)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         if (pos_node == -1)
             return;
 
-        file.seekg(repos);
+        file_explorer.seekg(repos);
         Record record;
-        file >> record;
-        inorder(record.left, file, records);
+        file_explorer >> record;
+        inorder(record.left, file_explorer, records);
         records.push_back(record);
-        inorder(record.right, file, records);
+        inorder(record.right, file_explorer, records);
     }
-
     Record find(long pos_node, TK key, fstream &file)
     {
         long repos = sizeof(long) + pos_node * sizeof(Record);
         file.seekg(repos);
         Record record;
         file >> record;
-        if (key < record.cod)
+        if (key < record.right)
             find(record.left, key, file);
-        else if (key > record.right)
+        else if (key > record.cod)
             find(record.right, key, file);
         return record;
     }
