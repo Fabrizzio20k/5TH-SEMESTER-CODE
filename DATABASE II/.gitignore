@@ -33,6 +33,6 @@
 
 .vscode
 
-.dat
-.bin
-.txt
+*.dat
+*.bin
+*.txt
