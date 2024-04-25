@@ -68,17 +68,34 @@ class LinearRegresion:
         sns.scatterplot(x=x, y=y_pre)
         plt.show()
 
-# posible_x_headers = ['FECHA_CORTE', 'ANIO_EJEC', 'SEC_EJEC', 'META', 'CANT_META_ANUAL', 'CANT_META_SEM', 'AVAN_FISICO_ANUAL', 'AVAN_FISICO_SEM', 'SEC_FUNC']
-# obtener todos los header con datos unicamente numericos antes de MTO_PIA
 
-# #OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
+# Cargamos el dataset
+df = pd.read_csv('./PROYECTO_1/train.csv')
+df_test = pd.read_csv('./PROYECTO_1/test.csv')
+
+# # Obtenemos los datos de y
+y_train = df['MTO_PIA'].to_numpy()
+
+# # Total de variables hasta antes de MTO_PIA
+# pos_mto_pia = df.columns.get_loc('MTO_PIA')
+# print(pos_mto_pia)
+
+# # Total de registros
+# print(df.shape)
+
+# # obtener todos los header con datos unicamente numericos antes de MTO_PIA
+# posible_x_headers = ['FECHA_CORTE', 'ANIO_EJEC', 'SEC_EJEC', 'META', 'CANT_META_ANUAL',
+#                      'CANT_META_SEM', 'AVAN_FISICO_ANUAL', 'AVAN_FISICO_SEM', 'SEC_FUNC']
+
+
+# # OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
 # for header in posible_x_headers:
 #     x_train = df[header]
 #     x_train = x_train.to_numpy()
 #     corr = np.corrcoef(x_train, y_train)
-#     print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1])
+#     print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1]**2)
 
-# GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
+# # GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
 # for header in posible_x_headers:
 #     x_train = df[header]
 #     x_train = x_train.to_numpy()
@@ -92,13 +109,8 @@ class LinearRegresion:
 # x_train_3 = df['AVAN_FISICO_SEM'].to_numpy()
 
 
-# Cargamos el dataset
-df = pd.read_csv('./PROYECTO_1/train.csv')
-df_test = pd.read_csv('./PROYECTO_1/test.csv')
-
-x_train = df['SEC_FUNC'].to_numpy()
-x_test = df_test['SEC_FUNC'].to_numpy()
-y_train = df['MTO_PIA'].to_numpy()
+x_train = df['META'].to_numpy()
+x_test = df_test['META'].to_numpy()
 
 # Normalizar los datos
 x_train = (x_train - np.min(x_train)) / (np.max(x_train) - np.min(x_train))
@@ -106,7 +118,7 @@ y_train = (y_train - np.min(y_train)) / (np.max(y_train) - np.min(y_train))
 x_test = (x_test - np.min(x_test)) / (np.max(x_test) - np.min(x_test))
 
 LR = LinearRegresion(3)
-time, error = LR.train(x_train, y_train, 0.1, 10000, 0.00001, "L2")
+time, error = LR.train(x_train, y_train, 0.1, 10000, 0.00001, "L1")
 LR.plot_error(time, error)
 # Desnormalizar los datos
 y_pred = LR.predic(x_test)
