@@ -63,9 +63,11 @@ class LinearRegresion:
         sns.lineplot(x=time, y=loss)
         plt.show()
 
-    def plot_line(self, x, y_pre):
+    def plot_line(self, x, y_pre, etiquetax='X', etiquetay='Y'):
         # GRAFICAR LA LINEA DE REGRESION CON SEABORN
-        sns.scatterplot(x=x, y=y_pre)
+        sns.lineplot(x=x, y=y_pre)
+        plt.xlabel(etiquetax)
+        plt.ylabel(etiquetay)
         plt.show()
 
 
@@ -108,6 +110,12 @@ y_train = df['MTO_PIA'].to_numpy()
 # x_train_2 = df['CANT_META_SEM'].to_numpy()
 # x_train_3 = df['AVAN_FISICO_SEM'].to_numpy()
 
+# plot original graph
+
+x_min = np.min(df['META'])
+x_max = np.max(df['META'])
+y_min = np.min(y_train)
+y_max = np.max(y_train)
 
 x_train = df['META'].to_numpy()
 x_test = df_test['META'].to_numpy()
@@ -117,11 +125,11 @@ x_train = (x_train - np.min(x_train)) / (np.max(x_train) - np.min(x_train))
 y_train = (y_train - np.min(y_train)) / (np.max(y_train) - np.min(y_train))
 x_test = (x_test - np.min(x_test)) / (np.max(x_test) - np.min(x_test))
 
-LR = LinearRegresion(3)
+LR = LinearRegresion(4)
 time, error = LR.train(x_train, y_train, 0.1, 10000, 0.00001, "L1")
 LR.plot_error(time, error)
 # Desnormalizar los datos
 y_pred = LR.predic(x_test)
-y_pred = y_pred * (np.max(y_train) - np.min(y_train)) + np.min(y_train)
-x_test = x_test * (np.max(x_train) - np.min(x_train)) + np.min(x_train)
-LR.plot_line(x_test, y_pred)
+y_pred = y_pred * (y_max - y_min) + y_min
+x_test = x_test * (x_max - x_min) + x_min
+LR.plot_line(x_test, y_pred, 'META', 'MTO_PIA')
