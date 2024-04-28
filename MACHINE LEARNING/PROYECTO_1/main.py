@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-class LinearRegresion:
+class NonLinearRegresion:
     def __init__(self, grado):
         self.m_W = np.random.rand(grado)
         self.m_b = np.random.random()
@@ -125,11 +125,20 @@ x_train = (x_train - np.min(x_train)) / (np.max(x_train) - np.min(x_train))
 y_train = (y_train - np.min(y_train)) / (np.max(y_train) - np.min(y_train))
 x_test = (x_test - np.min(x_test)) / (np.max(x_test) - np.min(x_test))
 
-LR = LinearRegresion(4)
-time, error = LR.train(x_train, y_train, 0.1, 10000, 0.00001, "L1")
-LR.plot_error(time, error)
+NLR = NonLinearRegresion(5)
+time, error = NLR.train(x_train, y_train, 0.9, 100000, 0.000001, "L2")
+NLR.plot_error(time, error)
 # Desnormalizar los datos
-y_pred = LR.predic(x_test)
+y_pred = NLR.predic(x_test)
 y_pred = y_pred * (y_max - y_min) + y_min
 x_test = x_test * (x_max - x_min) + x_min
-LR.plot_line(x_test, y_pred, 'META', 'MTO_PIA')
+NLR.plot_line(x_test, y_pred, 'META', 'MTO_PIA')
+
+# WRITE THE DATA IN A NEW CSV
+
+id = list(range(1, len(y_pred) + 1))
+newdf = pd.DataFrame({
+    'ID': id,
+    'MTO_PIA': y_pred
+})
+newdf.to_csv('submission.csv', index=False)
