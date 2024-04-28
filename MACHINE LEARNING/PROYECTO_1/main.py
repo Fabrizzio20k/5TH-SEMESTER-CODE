@@ -79,33 +79,34 @@ df_test = pd.read_csv('./PROYECTO_1/test.csv')
 # # Obtenemos los datos de y
 y_train = df['MTO_PIA'].to_numpy()
 
-# # Total de variables hasta antes de MTO_PIA
-# pos_mto_pia = df.columns.get_loc('MTO_PIA')
-# print(pos_mto_pia)
+# Total de variables hasta antes de MTO_PIA
+pos_mto_pia = df.columns.get_loc('MTO_PIA')
+print(pos_mto_pia)
 
-# # Total de registros
-# print(df.shape)
+# Total de registros
+print(df.shape)
 
-# # obtener todos los header con datos unicamente numericos antes de MTO_PIA
-# posible_x_headers = ['FECHA_CORTE', 'ANIO_EJEC', 'SEC_EJEC', 'META', 'CANT_META_ANUAL',
-#                      'CANT_META_SEM', 'AVAN_FISICO_ANUAL', 'AVAN_FISICO_SEM', 'SEC_FUNC']
+# obtener todos los header con datos unicamente numericos antes de MTO_PIA
+posible_x_headers = ['FECHA_CORTE', 'ANIO_EJEC', 'SEC_EJEC', 'META', 'CANT_META_ANUAL',
+                     'CANT_META_SEM', 'AVAN_FISICO_ANUAL', 'AVAN_FISICO_SEM', 'SEC_FUNC']
 
 
-# # OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
-# for header in posible_x_headers:
-#     x_train = df[header]
-#     x_train = x_train.to_numpy()
-#     corr = np.corrcoef(x_train, y_train)
-#     print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1]**2)
+# OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
+for header in posible_x_headers:
+    x_train = df[header]
+    x_train = x_train.to_numpy()
+    corr = np.corrcoef(x_train, y_train)
+    print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1]**2)
 
-# # GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
-# for header in posible_x_headers:
-#     x_train = df[header]
-#     x_train = x_train.to_numpy()
-#     plt.scatter(x_train, y_train)
-#     plt.xlabel(header)
-#     plt.ylabel('MTO_PIA')
-#     plt.show()
+# GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
+for header in posible_x_headers:
+    x_train = df[header]
+    x_train = x_train.to_numpy()
+    plt.title(header + ' vs MTO_PIA')
+    plt.scatter(x_train, y_train)
+    plt.xlabel(header)
+    plt.ylabel('MTO_PIA')
+    plt.show()
 
 # x_train_1 = df['META'].to_numpy()
 # x_train_2 = df['CANT_META_SEM'].to_numpy()
