@@ -6,6 +6,7 @@ import seaborn as sns
 
 class NonLinearRegresion:
     def __init__(self, grado):
+        np.random.seed(2005)
         self.m_W = np.random.rand(grado)
         self.m_b = np.random.random()
         self.grado = grado
