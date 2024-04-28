@@ -29,10 +29,10 @@ class NonLinearRegresion:
 
     def dL(self, X, Y, Y_pre, lambda_):
         dw = np.matmul(Y - Y_pre, -X)/len(Y) + 2*lambda_*self.m_W
-        db = np.sum((Y - Y_pre)*(-1))/len(Y)
-        return dw, db
+        # db = np.sum((Y - Y_pre)*(-1))/len(Y)
+        return dw
 
-    def change_params(self, dw, db, alpha):
+    def change_params(self, dw, alpha):
         self.m_W = self.m_W - alpha*dw
         # self.m_b = self.m_b - alpha*db
 
@@ -50,8 +50,8 @@ class NonLinearRegresion:
                 loss, y_pred = self.Loss_L1(X, Y, lambda_)
             time_stamp.append(i)
             error_list.append(loss)
-            dw, db = self.dL(X, Y, y_pred, lambda_)
-            self.change_params(dw, db, alpha)
+            dw = self.dL(X, Y, y_pred, lambda_)
+            self.change_params(dw, alpha)
 
             if (i % 1000 == 0):
                 # self.plot_error(time_stamp, error_list)
@@ -91,22 +91,22 @@ posible_x_headers = ['FECHA_CORTE', 'ANIO_EJEC', 'SEC_EJEC', 'META', 'CANT_META_
                      'CANT_META_SEM', 'AVAN_FISICO_ANUAL', 'AVAN_FISICO_SEM', 'SEC_FUNC']
 
 
-# OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
-for header in posible_x_headers:
-    x_train = df[header]
-    x_train = x_train.to_numpy()
-    corr = np.corrcoef(x_train, y_train)
-    print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1]**2)
+# # OBTENER LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y PARA SABER CUAL O CUALES SON LOS MEJORES CANDIDATOS
+# for header in posible_x_headers:
+#     x_train = df[header]
+#     x_train = x_train.to_numpy()
+#     corr = np.corrcoef(x_train, y_train)
+#     print('Correlación entre', header, 'y MTO_PIA:', corr[0, 1]**2)
 
-# GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
-for header in posible_x_headers:
-    x_train = df[header]
-    x_train = x_train.to_numpy()
-    plt.title(header + ' vs MTO_PIA')
-    plt.scatter(x_train, y_train)
-    plt.xlabel(header)
-    plt.ylabel('MTO_PIA')
-    plt.show()
+# # GRAFICAR LA CORRELACION DE LOS POSIBLES CANDIDATOS DE X RESPECTO A Y
+# for header in posible_x_headers:
+#     x_train = df[header]
+#     x_train = x_train.to_numpy()
+#     plt.title(header + ' vs MTO_PIA')
+#     plt.scatter(x_train, y_train)
+#     plt.xlabel(header)
+#     plt.ylabel('MTO_PIA')
+#     plt.show()
 
 # x_train_1 = df['META'].to_numpy()
 # x_train_2 = df['CANT_META_SEM'].to_numpy()
