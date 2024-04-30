@@ -1,0 +1,13 @@
+# ninja log v5
+0	160	7362008491675744	build.ninja	479a93687850bb1e
+4	657	7361987009425407	CMakeFiles/Lab_5_1.dir/exp.cpp.obj	5f10acd93829f79f
+4	532	7361993463565409	CMakeFiles/Lab_5_1.dir/exp_test.cpp.obj	36df491b8f67a020
+4	635	7361994509185793	CMakeFiles/Lab_5_1.dir/exp_parser.cpp.obj	4a74283b6dc5973
+17	985	7362000954921566	CMakeFiles/Lab_5_1.dir/imp_parser.cpp.obj	e69b25107b7e5547
+666	818	7362003044017002	Lab_5_1.exe	c09377a3d37b224
+12	951	7362000954601635	CMakeFiles/Lab_5_1.dir/imp.cpp.obj	a729b6a4e74bdbdc
+3	666	7362003042533545	CMakeFiles/Lab_5_1.dir/imp_test.cpp.obj	55a621f9738f9d9a
+3	1094	7362000956007858	CMakeFiles/Lab_5_1.dir/imp_interpreter.cpp.obj	aecf2531bc1580a5
+3	1328	7362009382627115	CMakeFiles/Lab_5_1.dir/imp_test.cpp.obj	55a621f9738f9d9a
+8	1488	7362009384217208	CMakeFiles/Lab_5_1.dir/imp_parser.cpp.obj	e69b25107b7e5547
+1489	1792	7362009387217211	Lab_5_1.exe	c09377a3d37b224
