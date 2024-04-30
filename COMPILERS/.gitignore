@@ -36,3 +36,5 @@
 .dat
 .bin
 .txt
+
+cmake-build-debug
