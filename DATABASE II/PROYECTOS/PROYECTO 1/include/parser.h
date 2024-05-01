@@ -13,8 +13,8 @@ enum class CommandType
     CREATE,
     SELECT,
     RANGE,
-    INSERT,
-    DELETE,
+    INSERTAR,
+    BORRAR,
     UNKNOWN
 };
 
@@ -86,7 +86,7 @@ private:
         }
         else if (regex_search(command, matches, insertRegex))
         {
-            cmd.type = CommandType::INSERT;
+            cmd.type = CommandType::INSERTAR;
             if (cmd.table != matches[1])
             {
                 cmd.type = CommandType::UNKNOWN;
@@ -110,7 +110,7 @@ private:
         }
         else if (regex_search(command, matches, deleteRegex))
         {
-            cmd.type = CommandType::DELETE;
+            cmd.type = CommandType::BORRAR;
             if (cmd.table != matches[1])
             {
                 cmd.type = CommandType::UNKNOWN;
@@ -157,7 +157,7 @@ public:
         case CommandType::RANGE:
             std::cout << "Selecting from table " << cmd.table << " where " << cmd.indexColumn << " between " << cmd.r1 << " and " << cmd.r2 << "\n";
             break;
-        case CommandType::INSERT:
+        case CommandType::INSERTAR:
             std::cout << "Inserting into table " << cmd.table << " values (";
             for (int i = 0; i < cmd.values.size(); i++)
             {
@@ -169,7 +169,7 @@ public:
             }
             std::cout << ")\n";
             break;
-        case CommandType::DELETE:
+        case CommandType::BORRAR:
             std::cout << "Deleting from table " << cmd.table << " where " << cmd.indexColumn << " = " << cmd.condition << "\n";
             break;
         default:
