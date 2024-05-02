@@ -1,0 +1,3 @@
+x=30
+y=180
+print(sin(x)); print(cos(y))
