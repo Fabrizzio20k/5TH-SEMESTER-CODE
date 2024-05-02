@@ -37,7 +37,7 @@ private:
     Command cmd;
     void parseCommand()
     {
-        regex createRegex(R"(create table (\w+) from file \"(.+)\" using (index hash|ISAM|AVL Index) \(\"(\w+)\"\))");
+        regex createRegex(R"(create table (\w+) from file \"(.+)\" using (HASH|ISAM|AVL) INDEX \(\"(\w+)\"\))");
         regex selectRegex(R"(select \* from (\w+) where (\w+) = (.+))");
         regex rangeRegex(R"(select \* from (\w+) where (\w+) between (.+) and (.+))");
         regex insertRegex(R"(insert into (\w+) values \((.+)\))");
@@ -182,7 +182,7 @@ public:
         Command cmd;
         string command;
 
-        command = "create table students from file \"students.txt\" using AVL Index (\"id\")";
+        command = "create table students from file \"students.txt\" using AVL INDEX (\"id\")";
         parseCommand();
         printSentence();
 
