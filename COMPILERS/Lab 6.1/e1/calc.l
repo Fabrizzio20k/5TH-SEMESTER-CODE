@@ -27,7 +27,7 @@ integer         ({dseq})
 "tan"       return Parser::token::TAN;
 "exp"       return Parser::token::EXP;
 "ln"        return Parser::token::LN;
-"sqrt"      return Parser::token::SQRT
+"sqrt"      return Parser::token::SQRT;
 
 %%
 
