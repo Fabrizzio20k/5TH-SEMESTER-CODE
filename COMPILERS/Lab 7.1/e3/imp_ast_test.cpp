@@ -5,7 +5,7 @@
 #include "imp.hh"
 #include "imp_parser.hh"
 #include "imp_printer.hh"
-//#include "imp_interpreter.hh"
+#include "imp_interpreter.hh"
 
 int main(int argc, const char* argv[]) {
 
@@ -34,11 +34,11 @@ int main(int argc, const char* argv[]) {
   }
 
   ImpPrinter printer;
-  //ImpInterpreter interpreter;
+  ImpInterpreter interpreter;
   
   printer.print(program);
-  //cout << "Run program:" << endl;
-  //interpreter.interpret(program);
+  cout << "Run program:" << endl;
+  interpreter.interpret(program);
 
   delete program;
 

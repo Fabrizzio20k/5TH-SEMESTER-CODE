@@ -23,23 +23,25 @@ int ImpInterpreter::memoria_lookup(string x) {
 /* *************** Fin manejo del estado del programa ****** */
 
 int ImpInterpreter::interpret(Program* p) {
-  // completar
-  return 0;
+    return p->accept(this);
 }
 
 int ImpInterpreter::visit(Program* p) {
-  // iterar - completar
-  return 0;
+    for (auto & it : p->slist) {
+        it->accept(this);
+    }
+    return 0;
 }
 
 int ImpInterpreter::visit(AssignStatement* s) {
-  // efectuar assignment
-  return 0;
+    int v = s->rhs->accept(this);
+    memoria_update(s->id, v);
+    return 0;
 }
 
 int ImpInterpreter::visit(PrintStatement* s) {
-  // imprimir
-  return 0;
+    cout << s->e->accept(this) << endl;
+    return 0;
 }
 
 int ImpInterpreter::visit(BinaryExp* e) {
