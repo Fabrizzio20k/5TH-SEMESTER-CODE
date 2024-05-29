@@ -1,0 +1,7 @@
+x = 4;
+accum = 0;
+while 0 < x do accum = accum + x; x = x - 1; print(x) endwhile;
+print(x);
+print(accum)
+
+
