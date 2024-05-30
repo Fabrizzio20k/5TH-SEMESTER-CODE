@@ -1,0 +1,2 @@
+g++ -o a.exe environment.hh imp_interpreter.cpp imp_interpreter.hh imp_parser.cpp imp_parser.hh imp_printer.cpp imp_printer.hh imp_value.cpp imp_value.hh imp_visitor.hh imp.cpp imp.hh imp_test.cpp
+.\a.exe "ejemplo11.imp"
