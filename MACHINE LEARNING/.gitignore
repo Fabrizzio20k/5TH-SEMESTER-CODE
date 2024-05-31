@@ -166,3 +166,4 @@ validation
 *.jpeg
 *.h5
 *.mat
+video_features
