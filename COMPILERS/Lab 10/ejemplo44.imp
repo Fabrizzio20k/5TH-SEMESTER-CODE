@@ -1,0 +1,12 @@
+var int x;
+x = 100;
+if x < 500 then
+  var int y;
+  y = 15;
+  x = 500;
+  print(x+y)
+endif;
+print(x)
+
+
+

@@ -1,0 +1,12 @@
+var int x, y;
+x = 4;
+if x < 5 then
+  var bool x;
+  x = 10;
+  z = 23;
+  y = x*2
+else
+  y = x*3
+endif;
+print(y)
+
