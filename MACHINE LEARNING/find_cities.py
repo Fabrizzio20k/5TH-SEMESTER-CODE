@@ -79,12 +79,10 @@ def main():
     ciudad1 = Ciudad("Peru", "Lima")
     ciudad2 = Ciudad("Argentina", "Buenos Aires")
 
-    # Elija el método de obtener coordenadas
     metodo_csv = ObtenerCoordenadasCSV('worldcities.csv')
     metodo_api = ObtenerCoordenadasAPI()
     metodo_mock = ObtenerCoordenadasMock()
 
-    # Cambie este método según su preferencia (csv, api, mock)
     metodo = metodo_api
 
     coord1 = obtener_coordenadas(ciudad1, metodo)
