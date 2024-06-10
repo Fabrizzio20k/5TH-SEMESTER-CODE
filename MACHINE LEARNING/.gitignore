@@ -167,3 +167,4 @@ validation
 *.h5
 *.mat
 video_features
+*.rda
