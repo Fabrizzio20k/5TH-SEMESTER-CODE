@@ -3,3 +3,4 @@ venv
 *.json
 *.csv
 *.pkl
+__pycache__
