@@ -3,7 +3,7 @@ import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer
+from nltk.stem import PorterStemmer, SnowballStemmer
 from collections import defaultdict, Counter
 import numpy as np
 import pickle
@@ -41,11 +41,14 @@ class SPIMIIndexer:
         self.__cleanup_temp_files()
 
     def preprocess(self, text):
-        # Tokenización, eliminación de stopwords y stemming
-        if detect(text) != 'es':
-            stemmer = PorterStemmer()
+        # Tokenización, eliminación de stopwords y stemming considerando el idioma. a veces el text es vacio ""
+        if text == "" or text == None:
+            return []
         else:
-            stemmer = nltk.SnowballStemmer('spanish')
+            if detect(text) == 'es':
+                stemmer = SnowballStemmer('spanish')
+            else:
+                stemmer = PorterStemmer()
 
         tokens = word_tokenize(text.lower())
         filtered_tokens = [stemmer.stem(
