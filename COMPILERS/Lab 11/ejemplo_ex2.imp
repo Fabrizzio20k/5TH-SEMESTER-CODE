@@ -1,0 +1,8 @@
+var int z, x, accum;
+x = 1;
+accum = 1;
+while (x < 4) do
+accum = 2*accum ;
+x = x+1
+endwhile
+

@@ -1,0 +1,10 @@
+var bool a,b;
+var int x,y,accum,z;
+x = 6;
+y = 5;
+z = ifexp(30<4,x*(2+y),x+3);
+accum=0;
+
+print(accum)
+
+

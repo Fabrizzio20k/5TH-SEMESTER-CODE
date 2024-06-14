@@ -1,0 +1,8 @@
+var int x,c;
+x = 0;
+c = 2;
+print(77);
+print(ifexp(x<10,100,200)+c)
+
+
+
