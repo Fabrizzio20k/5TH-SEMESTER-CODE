@@ -30,7 +30,7 @@ class AgglomerativeClustering:
         self.labels_ = self._get_labels(clusters, n_samples)
         return self
 
-    def fit_predict(self, X):
+    def predict(self, X):
         self.fit(X)
         return self.labels_
 
