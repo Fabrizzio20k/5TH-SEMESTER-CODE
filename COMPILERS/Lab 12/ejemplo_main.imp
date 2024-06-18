@@ -1,0 +1,15 @@
+var int a, b;
+
+fun void main()
+  var int y;
+  y = 10;
+  a = 5;
+  print(a+y);
+  if (true) then
+    var int a;
+    a=100;
+    print(a+y)
+  endif;
+  print(a+y);
+  return ()
+endfun
