@@ -10,8 +10,13 @@ endfun
 
 fun int suma(int x)
   var int accum;
+  var int t;
+  t = 0;
   accum = 0;
   while 0 < x do
+    while t < 3 do
+      t = t+1
+    endwhile;
     accum = accum + x; x = x - 1
   endwhile;
   print(accum);
