@@ -162,11 +162,145 @@ ORDER BY rank DESC
 LIMIT 1000;
 
 
+-- PREGUNTA 3: 
 
 
+CREATE TABLE articles (
+    article_id SERIAL PRIMARY KEY,
+    date DATE,
+    year INT,
+    month INT,
+    day INT,
+    author TEXT,
+    title TEXT,
+    article TEXT,
+    url TEXT,
+    section TEXT,
+    publication TEXT
+);
+
+COPY articles(date, year, month, day, author, title, article, url, section, publication)
+FROM 'C:\Users\vilch\OneDrive\Escritorio\5TH SEMESTER CODE\DATABASE II\LABS\LAB 8.1\news.csv'
+DELIMITER ','
+CSV HEADER;
+
+-- Agregar columnas para tsvector
+ALTER TABLE articles ADD COLUMN weighted_tsv tsvector;
+ALTER TABLE articles ADD COLUMN weighted_tsv2 tsvector;
+
+-- Almacenar y poblar los vectores de documentos
+UPDATE articles SET
+    weighted_tsv = x.weighted_tsv,
+    weighted_tsv2 = x.weighted_tsv
+FROM (
+    SELECT article_id,
+           setweight(to_tsvector('english', COALESCE(title, '')), 'A') ||
+           setweight(to_tsvector('english', COALESCE(article, '')), 'B') AS weighted_tsv
+    FROM articles
+) AS x
+WHERE x.article_id = articles.article_id;
+
+-- Crear índice GIN en weighted_tsv2
+CREATE INDEX weighted_tsv_idx ON articles USING GIN (weighted_tsv2);
 
 
+-- Consultas sin índice
 
+-- 1000 elementos
+EXPLAIN ANALYZE
+SELECT title, article
+FROM (
+    SELECT *, (title || article) AS texto
+    FROM articles
+    LIMIT 1000
+) T
+WHERE T.texto ILIKE '%man%' OR T.texto ILIKE '%woman%';
 
+-- 10000 elementos
+EXPLAIN ANALYZE
+SELECT title, article
+FROM (
+    SELECT *, (title || article) AS texto
+    FROM articles
+    LIMIT 10000
+) T
+WHERE T.texto ILIKE '%man%' OR T.texto ILIKE '%woman%';
+
+-- 100000 elementos
+EXPLAIN ANALYZE
+SELECT title, article
+FROM (
+    SELECT *, (title || article) AS texto
+    FROM articles
+    LIMIT 100000
+) T
+WHERE T.texto ILIKE '%man%' OR T.texto ILIKE '%woman%';
+
+-- 1000000 elementos
+EXPLAIN ANALYZE
+SELECT title, article
+FROM (
+    SELECT *, (title || article) AS texto
+    FROM articles
+    LIMIT 1000000
+) T
+WHERE T.texto ILIKE '%man%' OR T.texto ILIKE '%woman%';
+
+-- 2489643 elementos (todos los elementos si tienes este número de filas)
+EXPLAIN ANALYZE
+SELECT title, article
+FROM (
+    SELECT *, (title || article) AS texto
+    FROM articles
+    LIMIT 2489643
+) T
+WHERE T.texto ILIKE '%man%' OR T.texto ILIKE '%woman%';
+
+-- Consultas con índice
+
+-- 1000 elementos
+SET enable_seqscan = false;
+EXPLAIN ANALYZE
+SELECT title, article, ts_rank_cd(weighted_tsv, query) AS rank
+FROM articles, to_tsquery('english', 'Man | Woman') query
+WHERE query @@ weighted_tsv
+ORDER BY rank DESC
+LIMIT 1000;
+
+-- 10000 elementos
+SET enable_seqscan = false;
+EXPLAIN ANALYZE
+SELECT title, article, ts_rank_cd(weighted_tsv, query) AS rank
+FROM articles, to_tsquery('english', 'Man | Woman') query
+WHERE query @@ weighted_tsv
+ORDER BY rank DESC
+LIMIT 10000;
+
+-- 100000 elementos
+SET enable_seqscan = false;
+EXPLAIN ANALYZE
+SELECT title, article, ts_rank_cd(weighted_tsv, query) AS rank
+FROM articles, to_tsquery('english', 'Man | Woman') query
+WHERE query @@ weighted_tsv
+ORDER BY rank DESC
+LIMIT 100000;
+
+-- 1000000 elementos
+SET enable_seqscan = false;
+EXPLAIN ANALYZE
+SELECT title, article, ts_rank_cd(weighted_tsv, query) AS rank
+FROM articles, to_tsquery('english', 'Man | Woman') query
+WHERE query @@ weighted_tsv
+ORDER BY rank DESC
+LIMIT 1000000;
+
+-- 2489643 elementos (todos los elementos si tienes este número de filas)
+SET enable_seqscan = false;
+EXPLAIN ANALYZE
+SELECT title, article, ts_rank_cd(weighted_tsv, query) AS rank
+FROM articles, to_tsquery('english', 'Man | Woman') query
+WHERE query @@ weighted_tsv
+ORDER BY rank DESC
+LIMIT 2489643;
 
 
