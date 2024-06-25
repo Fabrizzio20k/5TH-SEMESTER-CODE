@@ -1,0 +1,30 @@
+var int a, b;
+
+fun int suma(int x)
+  var int accum;
+  var bool zz;
+  accum = 0;
+  while 0 < x do
+    var int zz;
+    zz = 10;
+    accum = accum + x; x = x - 1
+  endwhile;
+  zz = false;
+  print(accum);
+  return (accum)
+endfun
+
+fun int sumarec(int x)
+  if (x < 1) then
+    return (0)
+  endif;
+  return (x + sumarec(x-1))	
+endfun
+
+
+fun void main()
+  var int y;
+  y = sumarec(4);
+  print(y);
+  return ()
+endfun
