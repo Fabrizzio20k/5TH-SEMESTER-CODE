@@ -56,10 +56,6 @@ ORDER BY rank DESC
 LIMIT 10;
 
 
-
-
-
-
 -- Agregar columnas para tsvector
 ALTER TABLE film ADD COLUMN weighted_tsv tsvector;
 ALTER TABLE film ADD COLUMN weighted_tsv2 tsvector;

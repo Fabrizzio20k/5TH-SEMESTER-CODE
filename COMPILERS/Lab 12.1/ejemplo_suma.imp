@@ -1,0 +1,19 @@
+var int a, x;
+
+fun int suma(int x)
+  var int accum;
+  accum = 0;
+  while 0 < x do
+    accum = accum + x; x = x - 1
+  endwhile;
+  print(accum);
+  return (accum)
+endfun
+
+fun void main()
+  var int y;
+  x = 5;
+  y = suma(3);
+  print(y);
+  return ()
+endfun
