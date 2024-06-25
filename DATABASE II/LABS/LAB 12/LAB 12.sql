@@ -17,12 +17,12 @@ CREATE TABLE salaries (
 );
 
 COPY employees(emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date)
-FROM 'C:\\Users\\vilch\\Desktop\\5TH-SEMESTER-CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
+FROM 'C:\\Users\\vilch\\OneDrive\\Escritorio\\5TH SEMESTER CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY salaries(emp_no, salary, from_date, to_date)
-FROM 'C:\\Users\\vilch\\Desktop\\5TH-SEMESTER-CODE\\DATABASE II\\LABS\\LAB 12\\salaries.csv'
+FROM 'C:\\Users\\vilch\\OneDrive\\Escritorio\\5TH SEMESTER CODE\\DATABASE II\\LABS\\LAB 12\\salaries.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -51,7 +51,7 @@ CREATE TABLE employees1_default PARTITION OF employees1 DEFAULT;
 
 
 COPY employees1 (emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date)
-FROM 'C:\\Users\\vilch\\Desktop\\5TH-SEMESTER-CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
+FROM 'C:\\Users\\vilch\\OneDrive\\Escritorio\\5TH SEMESTER CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -94,7 +94,7 @@ CREATE TABLE employees2_after_1994 PARTITION OF employees2
 
 
 COPY employees2 (emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date)
-FROM 'C:\\Users\\vilch\\Desktop\\5TH-SEMESTER-CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
+FROM 'C:\\Users\\vilch\\OneDrive\\Escritorio\\5TH SEMESTER CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -125,7 +125,7 @@ CREATE TABLE employees3 (
 );
 
 COPY employees3(emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date)
-FROM 'C:\\Users\\vilch\\Desktop\\5TH-SEMESTER-CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
+FROM 'C:\\Users\\vilch\\OneDrive\\Escritorio\\5TH SEMESTER CODE\\DATABASE II\\LABS\\LAB 12\\employees.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -145,7 +145,7 @@ EXPLAIN ANALYZE SELECT * FROM employees2 WHERE date_part('year', hire_date) BETW
 EXPLAIN ANALYZE SELECT * FROM employees2 WHERE date_part('year', hire_date) BETWEEN 1988 AND 1994;
 EXPLAIN ANALYZE SELECT * FROM employees2 WHERE date_part('year', hire_date) BETWEEN 1995 AND 2000;
 
--- PREGUNTA 3: Partition by hash
+-- PREGUNTA 3: Partition by two columns
 
 DROP TABLE IF EXISTS employees3;
 
@@ -177,28 +177,58 @@ select * from employees;
 
 select COUNT(*) from employees;
 
--- Partición 1: Antes de 1988
-CREATE TABLE employees3_before_1988_low PARTITION OF employees3
-    FOR VALUES FROM (MINVALUE, MINVALUE) TO (1988, 50000);
-
-CREATE TABLE employees3_before_1988_high PARTITION OF employees3
-    FOR VALUES FROM (MINVALUE, 50000) TO (1988, MAXVALUE);
-
--- Partición 2: 1988 - 1994
-CREATE TABLE employees3_1988_1994_low PARTITION OF employees3
-    FOR VALUES FROM (1988, MINVALUE) TO (1995, 50000);
-
-CREATE TABLE employees3_1988_1994_high PARTITION OF employees3
-    FOR VALUES FROM (1988, 50000) TO (1995, MAXVALUE);
-
--- Partición 3: Después de 1994
-CREATE TABLE employees3_after_1994_low PARTITION OF employees3
-    FOR VALUES FROM (1995, MINVALUE) TO (MAXVALUE, 50000);
-
-CREATE TABLE employees3_after_1994_high PARTITION OF employees3
-    FOR VALUES FROM (1995, 50000) TO (MAXVALUE, MAXVALUE);
-
+CREATE TABLE employees3_p1 PARTITION OF employees3 FOR VALUES FROM (MINVALUE, MINVALUE) TO (1990, 60001);
+CREATE TABLE employees3_p2 PARTITION OF employees3 FOR VALUES FROM (1990, 60001) TO (1995, 100001);
+CREATE TABLE employees3_p3 PARTITION OF employees3 FOR VALUES FROM (1995, 100001) TO (MAXVALUE, MAXVALUE);
 
 INSERT INTO employees3 (emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date, salary)
 SELECT emp_no, birth_date, first_name, last_name, gender, hire_date, dept_no, from_date, salary
 FROM employees;
+
+-- CONSULTA 1
+-- En la tabla employees
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees
+WHERE date_part('year', hire_date) BETWEEN 1990 AND 1994
+  AND salary BETWEEN 60001 AND 100000;
+
+-- En la tabla employees3
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees3
+WHERE date_part('year', hire_date) BETWEEN 1990 AND 1994
+  AND salary BETWEEN 60001 AND 100000;
+
+-- CONSULTA 2
+-- En la tabla employees
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees
+WHERE date_part('year', hire_date) > 1995
+  AND salary > 100000;
+
+-- En la tabla employees3
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees3
+WHERE date_part('year', hire_date) > 1995
+  AND salary > 100000;
+
+
+-- CONSULTA 3
+-- En la tabla employees
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees
+WHERE date_part('year', hire_date) < 1990
+  AND salary < 60001;
+
+-- En la tabla employees3
+EXPLAIN ANALYZE
+SELECT emp_no, first_name, last_name, hire_date, salary
+FROM employees3
+WHERE date_part('year', hire_date) < 1990
+  AND salary < 60001;
+
+
