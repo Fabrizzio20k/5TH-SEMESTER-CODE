@@ -3,7 +3,7 @@
 DROP TABLE IF EXISTS Alumnos CASCADE;
 DROP TABLE IF EXISTS talumnos CASCADE;
 
-CREATE TABLE Alumnos (
+CREATE TABLE alumnos (
     dni varchar(8),
     nombre varchar(30),
     ciudad varchar(30),
@@ -55,7 +55,6 @@ BEGIN
     ) INTO partition_exists;
 
     IF NOT partition_exists THEN
-        RAISE NOTICE 'A partition % has been created', partition;
         EXECUTE 'CREATE TABLE ' || partition || ' PARTITION OF ' || parent_table || ' FOR VALUES IN (' || quote_literal(partition_city) || ');';
     END IF;
 
@@ -100,8 +99,7 @@ INSERT INTO talumnos VALUES ('72123460', 'Pedro Perez', 'Tacna', 'A', 18.5, 24, 
 
 /* P2 */
 
-DROP TABLE IF EXISTS Alumnos CASCADE;
-DROP TABLE IF EXISTS talumnos CASCADE;
+-- Crear extensión postgres_fdw
 
 CREATE EXTENSION postgres_fdw;
 
@@ -115,28 +113,44 @@ CREATE USER MAPPING FOR postgres
 SERVER remote_server
 OPTIONS (user 'remote_user', password 'remote_password');
 
-
--- Crear la tabla en el servidor remoto
-CREATE TABLE alumnos (
-    dni varchar(8),
-    nombre varchar(30),
-    ciudad varchar(30),
-    grupo varchar(1),
-    promedio float,
-    edad int,
-    sexo varchar(1)
-);
-
--- Importar la tabla del servidor remoto
+-- Importar la tabla `talumnos_remoto` desde el servidor remoto
 IMPORT FOREIGN SCHEMA public
-    LIMIT TO (alumnos)
+    LIMIT TO (talumnos_remoto)
     FROM SERVER remote_server
     INTO public;
 
-INSERT INTO alumnos (dni, nombre, ciudad, grupo, promedio, edad, sexo)
-VALUES ('72123461', 'Luis Perez', 'Arequipa', 'A', 16.0, 25, 'M');
+-- Crear la función para sincronizar las inserciones al servidor remoto
+-- Crear la función para sincronizar las inserciones al servidor remoto
+CREATE OR REPLACE FUNCTION sync_insert_to_remote() RETURNS trigger AS
+$BODY$
+BEGIN
+    EXECUTE 'INSERT INTO talumnos_remoto (dni, nombre, ciudad, grupo, promedio, edad, sexo) VALUES (' || quote_literal(NEW.dni) || ', ' ||
+                                              quote_literal(NEW.nombre) || ', ' ||
+                                              quote_literal(NEW.ciudad) || ', ' ||
+                                              quote_literal(NEW.grupo) || ', ' ||
+                                              NEW.promedio || ', ' ||
+                                              NEW.edad || ', ' ||
+                                              quote_literal(NEW.sexo) || ');';
+    RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
 
-select * from alumnos;
+-- Crear el trigger para sincronizar las inserciones con el servidor remoto
+CREATE OR REPLACE TRIGGER sync_insert_trigger
+AFTER INSERT ON talumnos
+FOR EACH ROW EXECUTE PROCEDURE sync_insert_to_remote();
+
+
+-- Inserciones de prueba en la tabla intermedia local
+INSERT INTO talumnos VALUES ('72123456', 'Juan Perez', 'Lima', 'A', 15.5, 20, 'M');
+INSERT INTO talumnos VALUES ('72123457', 'Maria Perez', 'Callao', 'B', 14.5, 21, 'F');
+INSERT INTO talumnos VALUES ('72123458', 'Jose Perez', 'Cuzco', 'A', 16.5, 22, 'M');
+INSERT INTO talumnos VALUES ('72123459', 'Ana Perez', 'Arequipa', 'B', 17.5, 23, 'F');
+INSERT INTO talumnos VALUES ('72123460', 'Pedro Perez', 'Tacna', 'A', 18.5, 24, 'M');
+INSERT INTO talumnos VALUES ('72123461', 'Luis Perez', 'Arequipa', 'A', 16.0, 25, 'M');
+
 
 
 
