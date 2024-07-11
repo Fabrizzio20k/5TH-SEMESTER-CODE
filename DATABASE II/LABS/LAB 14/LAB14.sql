@@ -98,6 +98,49 @@ INSERT INTO talumnos VALUES ('72123460', 'Pedro Perez', 'Tacna', 'A', 18.5, 24, 
 - Alternativamente, se pueden definir índices únicos en cada partición. Sin embargo, esto no garantiza la unicidad a nivel global sin mecanismos adicionales.
 */
 
+/* P2 */
+
+DROP TABLE IF EXISTS Alumnos CASCADE;
+DROP TABLE IF EXISTS talumnos CASCADE;
+
+CREATE EXTENSION postgres_fdw;
+
+-- Crear el servidor FDW
+CREATE SERVER remote_server
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host 'localhost', port '5433', dbname 'remote_db');
+
+-- Crear el mapeo de usuarios
+CREATE USER MAPPING FOR postgres
+SERVER remote_server
+OPTIONS (user 'remote_user', password 'remote_password');
+
+
+-- Crear la tabla en el servidor remoto
+CREATE TABLE alumnos (
+    dni varchar(8),
+    nombre varchar(30),
+    ciudad varchar(30),
+    grupo varchar(1),
+    promedio float,
+    edad int,
+    sexo varchar(1)
+);
+
+-- Importar la tabla del servidor remoto
+IMPORT FOREIGN SCHEMA public
+    LIMIT TO (alumnos)
+    FROM SERVER remote_server
+    INTO public;
+
+INSERT INTO alumnos (dni, nombre, ciudad, grupo, promedio, edad, sexo)
+VALUES ('72123461', 'Luis Perez', 'Arequipa', 'A', 16.0, 25, 'M');
+
+select * from alumnos;
+
+
+
+
 
 
 
