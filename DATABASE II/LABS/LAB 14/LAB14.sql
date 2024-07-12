@@ -43,6 +43,7 @@ DECLARE
     parent_table TEXT := 'alumnos';
     partition_exists BOOLEAN;
 BEGIN
+    RAISE NOTICE 'Inserting row into partitioned table. The values are: %', NEW;
     partition_city := NEW.ciudad;
     partition := parent_table || '_' || lower(partition_city);
 
@@ -99,31 +100,25 @@ INSERT INTO talumnos VALUES ('72123460', 'Pedro Perez', 'Tacna', 'A', 18.5, 24, 
 
 /* P2 */
 
--- Crear extensión postgres_fdw
-
 CREATE EXTENSION postgres_fdw;
 
--- Crear el servidor FDW
 CREATE SERVER remote_server
 FOREIGN DATA WRAPPER postgres_fdw
 OPTIONS (host 'localhost', port '5433', dbname 'remote_db');
 
--- Crear el mapeo de usuarios
 CREATE USER MAPPING FOR postgres
 SERVER remote_server
 OPTIONS (user 'remote_user', password 'remote_password');
 
--- Importar la tabla `talumnos_remoto` desde el servidor remoto
 IMPORT FOREIGN SCHEMA public
-    LIMIT TO (talumnos_remoto)
+    LIMIT TO (alumnos_remoto, talumnos_remoto)
     FROM SERVER remote_server
     INTO public;
 
--- Crear la función para sincronizar las inserciones al servidor remoto
--- Crear la función para sincronizar las inserciones al servidor remoto
 CREATE OR REPLACE FUNCTION sync_insert_to_remote() RETURNS trigger AS
 $BODY$
 BEGIN
+    RAISE NOTICE 'Inserting row into remote server. The values are: %', NEW;
     EXECUTE 'INSERT INTO talumnos_remoto (dni, nombre, ciudad, grupo, promedio, edad, sexo) VALUES (' || quote_literal(NEW.dni) || ', ' ||
                                               quote_literal(NEW.nombre) || ', ' ||
                                               quote_literal(NEW.ciudad) || ', ' ||
@@ -137,20 +132,43 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
--- Crear el trigger para sincronizar las inserciones con el servidor remoto
 CREATE OR REPLACE TRIGGER sync_insert_trigger
 AFTER INSERT ON talumnos
 FOR EACH ROW EXECUTE PROCEDURE sync_insert_to_remote();
 
+COPY talumnos(dni, nombre, ciudad, grupo, promedio, edad, sexo)
+FROM 'C:\Users\vilch\Desktop\dataset.csv'
+DELIMITER ','
+CSV HEADER;
 
--- Inserciones de prueba en la tabla intermedia local
-INSERT INTO talumnos VALUES ('72123456', 'Juan Perez', 'Lima', 'A', 15.5, 20, 'M');
-INSERT INTO talumnos VALUES ('72123457', 'Maria Perez', 'Callao', 'B', 14.5, 21, 'F');
-INSERT INTO talumnos VALUES ('72123458', 'Jose Perez', 'Cuzco', 'A', 16.5, 22, 'M');
-INSERT INTO talumnos VALUES ('72123459', 'Ana Perez', 'Arequipa', 'B', 17.5, 23, 'F');
-INSERT INTO talumnos VALUES ('72123460', 'Pedro Perez', 'Tacna', 'A', 18.5, 24, 'M');
-INSERT INTO talumnos VALUES ('72123461', 'Luis Perez', 'Arequipa', 'A', 16.0, 25, 'M');
 
+-- CONSULTA 1
+SELECT ciudad, COUNT(*) as total_alumnos
+FROM (
+    SELECT ciudad FROM alumnos
+    UNION ALL
+    SELECT ciudad FROM alumnos_remoto
+) AS combined
+GROUP BY ciudad;
+
+-- CONSULTA 2
+SELECT dni, nombre, ciudad, grupo, promedio, edad, sexo
+FROM talumnos
+WHERE promedio > 15
+UNION ALL
+SELECT dni, nombre, ciudad, grupo, promedio, edad, sexo
+FROM talumnos_remoto
+WHERE promedio > 15;
+
+--CONSULTA 3
+
+SELECT ciudad, COUNT(*) as num_alumnos
+FROM (
+    SELECT ciudad FROM talumnos
+    UNION ALL
+    SELECT ciudad FROM talumnos_remoto
+) as all_students
+GROUP BY ciudad;
 
 
 
